@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="project-view">
+    <div class="project-main">
+        <div class="card-meta">
+            <a href="{% url 'profile_detail' project.author.profile.pk %}">
+                {{ project.author.last_name }} {{ project.author.first_name }}
+            </a>
+            <span>{{ project.created_at|date:"d.m.Y" }}</span>
+            <span>{{ project.get_status_display }}</span>
+        </div>
+        <h1>{{ project.name }}</h1>
+        <p>{{ project.description|linebreaksbr }}</p>
+        {% if project.github_url %}
+            <p><a href="{{ project.github_url }}">Репозиторий на GitHub</a></p>
+        {% endif %}
+        <div class="actions">
+            <button class="share-icon-button share-button" type="button">
+                {% include "icons/share.html" %}
+            </button>
+            {% if user.is_authenticated and not is_owner and not is_member and project.status == "open" %}
+                <form method="post" action="{% url 'project_join' project.pk %}">
+                    {% csrf_token %}
+                    <button class="button" type="submit">Присоединиться к проекту</button>
+                </form>
+            {% elif user.is_authenticated and is_member and not is_owner %}
+                <span class="badge">Вы участвуете</span>
+            {% endif %}
+            {% if is_owner %}
+                <a class="button" href="{% url 'project_edit' project.pk %}">Редактировать проект</a>
+                {% if project.status == "open" %}
+                    <form method="post" action="{% url 'project_finish' project.pk %}">
+                        {% csrf_token %}
+                        <button class="button danger" type="submit">Завершить проект</button>
+                    </form>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    {% if is_owner %}
+        <aside class="side-panel">
+            <h2>Участники проекта</h2>
+            <div class="member-list">
+                {% for member in project.members.all %}
+                    <a href="{% url 'profile_detail' member.profile.pk %}">
+                        <img src="{{ member.profile.avatar }}" alt="">
+                        <span>{{ member.last_name }} {{ member.first_name }}</span>
+                    </a>
+                {% endfor %}
+            </div>
+        </aside>
+    {% endif %}
+</section>
+{% endblock %}

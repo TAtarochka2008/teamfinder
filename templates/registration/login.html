@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="form-wrap auth-card auth-card-small">
+    <div class="auth-heading">
+        <h1>Вход</h1>
+    </div>
+    <form method="post" class="form">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            <div class="form-errors">{{ form.non_field_errors }}</div>
+        {% endif %}
+        <p>
+            {{ form.username.label_tag }}
+            {{ form.username }}
+            {{ form.username.errors }}
+        </p>
+        <p>
+            {{ form.password.label_tag }}
+            {{ form.password }}
+            {{ form.password.errors }}
+        </p>
+        <button class="button auth-submit" type="submit">Войти</button>
+    </form>
+    <p class="auth-switch">Нет аккаунта? <a href="{% url 'signup' %}">Зарегистрироваться</a></p>
+</section>
+{% endblock %}

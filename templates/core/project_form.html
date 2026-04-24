@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="form-wrap wide">
+    <h1>{% if is_edit %}Редактирование проекта{% else %}Создание проекта{% endif %}</h1>
+    <form method="post" class="form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="button" type="submit">{% if is_edit %}Сохранить изменения{% else %}Опубликовать{% endif %}</button>
+    </form>
+</section>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="heading">
+    <div>
+        <h1>Актуальные проекты</h1>
+        <p>Идеи, к которым можно присоединиться прямо сейчас.</p>
+    </div>
+    {% if user.is_authenticated %}
+        <a class="button" href="{% url 'project_create' %}">Создать проект</a>
+    {% endif %}
+</section>
+
+<section class="grid">
+    {% for project in page_obj %}
+        <article class="card project-card">
+            <div class="author-line">
+                <img src="{{ project.author.profile.avatar }}" alt="">
+                <a href="{% url 'profile_detail' project.author.profile.pk %}">
+                    {{ project.author.last_name }} {{ project.author.first_name }}
+                </a>
+            </div>
+            <h2><a href="{% url 'project_detail' project.pk %}">{{ project.name }}</a></h2>
+            <p>{{ project.short_description }}</p>
+            <div class="card-meta">
+                <span>{{ project.created_at|date:"d.m.Y" }}</span>
+                <span>{{ project.get_status_display }}</span>
+            </div>
+        </article>
+    {% empty %}
+        <div class="empty">Пока нет проектов. Самое время создать первый.</div>
+    {% endfor %}
+</section>
+
+{% include "core/pagination.html" %}
+{% endblock %}

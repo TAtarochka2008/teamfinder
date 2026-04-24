@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="profile-head profile-hero">
+    {% if is_owner %}
+        <a class="button profile-edit-button profile-top-action" href="{% url 'profile_edit' profile.pk %}">
+            {% include "icons/edit.html" %}
+            Редактировать профиль
+        </a>
+    {% endif %}
+    <div class="profile-photo-wrap">
+        <img class="avatar big" src="{{ profile.avatar }}" alt="">
+    </div>
+    <div class="profile-info">
+        <h1>{{ profile.user.last_name }} {{ profile.user.first_name }}</h1>
+        <p>{{ profile.bio|default:"Пользователь пока не добавил описание." }}</p>
+        <div class="contacts">
+            <span>Email: {{ profile.user.email }}</span>
+            {% if profile.phone %}<span>Телефон: {{ profile.phone }}</span>{% endif %}
+            {% if profile.github %}<a href="{{ profile.github }}">GitHub</a>{% endif %}
+        </div>
+        <div class="actions">
+            <button class="share-icon-button share-button" type="button">
+                {% include "icons/share.html" %}
+            </button>
+        </div>
+    </div>
+</section>
+
+<section class="section profile-panel">
+    <div class="section-title">
+        <h2>Навыки</h2>
+        {% if is_owner %}
+            <button class="button small" id="skill-open" type="button">+ Добавить навык</button>
+        {% endif %}
+    </div>
+    <div class="tags" id="skill-tags" data-profile="{{ profile.pk }}" data-owner="{{ is_owner|yesno:'1,0' }}">
+        {% for skill in profile.skills.all %}
+            <span class="tag" data-id="{{ skill.id }}">{{ skill.name }}{% if is_owner %}<button type="button">×</button>{% endif %}</span>
+        {% empty %}
+            <span class="muted" id="skills-empty">Навыки пока не указаны.</span>
+        {% endfor %}
+    </div>
+    {% if is_owner %}
+        <div class="skill-box hidden" id="skill-box">
+            <input id="skill-input" type="text" placeholder="Например, Django">
+            <div class="suggestions" id="skill-suggestions"></div>
+        </div>
+    {% endif %}
+</section>
+
+<section class="section profile-panel">
+    <div class="section-title">
+        <h2>Проекты</h2>
+        {% if is_owner %}
+            <a class="button" href="{% url 'project_create' %}">
+                {% include "icons/plus.html" %}
+                Добавить проект
+            </a>
+        {% endif %}
+    </div>
+    <div class="grid">
+        {% for project in projects %}
+            <article class="card">
+                <h3><a href="{% url 'project_detail' project.pk %}">{{ project.name }}</a></h3>
+                <p>{{ project.short_description }}</p>
+                <div class="card-meta">
+                    <span>{{ project.created_at|date:"d.m.Y" }}</span>
+                    <span>{{ project.get_status_display }}</span>
+                </div>
+            </article>
+        {% empty %}
+            <div class="empty">У пользователя пока нет проектов.</div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+{% if is_owner %}
+<script src="{% static 'js/skills.js' %}"></script>
+{% endif %}
+{% endblock %}

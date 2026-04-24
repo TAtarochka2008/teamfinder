@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="heading">
+    <div>
+        <h1>Пользователи</h1>
+        <p>Участники платформы и их контакты.</p>
+    </div>
+</section>
+
+<section class="section user-filter">
+    <h2>Фильтр по навыкам</h2>
+    <div class="tags filter-tags">
+        {% for skill in skills %}
+            <a class="tag {% if active_skill == skill.name %}active{% endif %}" href="{% url 'user_list' %}?skill={{ skill.name|urlencode }}">{{ skill.name }}</a>
+        {% empty %}
+            <span class="muted">Навыки ещё не добавлены.</span>
+        {% endfor %}
+        {% if active_skill %}
+            <a class="reset" href="{% url 'user_list' %}">Сбросить</a>
+        {% endif %}
+    </div>
+</section>
+
+<section class="grid user-grid">
+    {% for profile in page_obj %}
+        <article class="card user-card">
+            <div class="user-card-top">
+                <img class="avatar" src="{{ profile.avatar }}" alt="">
+                <div>
+                    <h2><a href="{% url 'profile_detail' profile.pk %}">{{ profile.user.last_name }} {{ profile.user.first_name }}</a></h2>
+                    <p class="user-role">Участник TeamFinder</p>
+                </div>
+            </div>
+            <p class="user-bio">{{ profile.bio|default:"Описание пока не заполнено." }}</p>
+            <div class="tags user-skill-preview">
+                {% for skill in profile.skills.all|slice:":4" %}
+                    <span class="tag">{{ skill.name }}</span>
+                {% empty %}
+                    <span class="muted">Навыки не указаны</span>
+                {% endfor %}
+            </div>
+            <div class="contacts-popover">
+                <button class="contacts-trigger" type="button">Посмотреть контакты</button>
+                <div class="contacts compact contact-menu">
+                    <span>{{ profile.user.email }}</span>
+                    {% if profile.phone %}<span>{{ profile.phone }}</span>{% endif %}
+                    {% if profile.github %}<a href="{{ profile.github }}">GitHub</a>{% endif %}
+                </div>
+            </div>
+        </article>
+    {% empty %}
+        <div class="empty">По выбранному фильтру никого не нашлось.</div>
+    {% endfor %}
+</section>
+
+{% include "core/pagination.html" %}
+{% endblock %}
