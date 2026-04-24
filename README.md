@@ -8,6 +8,7 @@
 python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
+copy .env.example .env
 python manage.py migrate
 python manage.py createsuperuser
 python manage.py runserver --insecure
@@ -26,6 +27,7 @@ python manage.py seed_demo
 ## Запуск через Docker Compose
 
 ```bash
+copy .env.example .env
 docker compose up --build
 ```
 
