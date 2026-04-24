@@ -36,6 +36,14 @@ urlpatterns = [
     path("projects/<int:pk>/join/", views.project_join, name="project_join"),
     path("projects/<int:pk>/finish/", views.project_finish, name="project_finish"),
     path("skills/search/", views.skill_search, name="skill_search"),
-    path("users/<int:pk>/skills/add/", views.profile_skill_add, name="profile_skill_add"),
-    path("users/<int:pk>/skills/<int:skill_id>/delete/", views.profile_skill_delete, name="profile_skill_delete"),
+    path(
+        "users/<int:pk>/skills/add/",
+        views.profile_skill_add,
+        name="profile_skill_add",
+    ),
+    path(
+        "users/<int:pk>/skills/<int:skill_id>/delete/",
+        views.profile_skill_delete,
+        name="profile_skill_delete",
+    ),
 ]

@@ -34,7 +34,10 @@ class Command(BaseCommand):
         projects = [
             (
                 "Трекер привычек для команд",
-                "Сервис помогает небольшой команде договориться о привычках и видеть общий прогресс.",
+                (
+                    "Сервис помогает небольшой команде договориться о привычках "
+                    "и видеть общий прогресс."
+                ),
                 created_users[0],
             ),
             (
@@ -54,8 +57,10 @@ class Command(BaseCommand):
                 author=author,
                 defaults={
                     "description": description,
-                    "github_url": f"https://github.com/{author.username.split('@')[0]}/teamfinder-demo",
+                    "github_url": "https://github.com/",
                 },
             )
             project.members.add(author)
-        self.stdout.write(self.style.SUCCESS("Демо-данные готовы. Пароль пользователей: testpass123"))
+        self.stdout.write(
+            self.style.SUCCESS("Демо-данные готовы. Пароль пользователей: testpass123")
+        )

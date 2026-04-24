@@ -17,7 +17,9 @@ def paginate(request, queryset, per_page=12):
 
 
 def home(request):
-    projects = Project.objects.select_related("author", "author__profile").prefetch_related("members")
+    projects = Project.objects.select_related("author", "author__profile").prefetch_related(
+        "members"
+    )
     page_obj = paginate(request, projects)
     return render(request, "core/home.html", {"page_obj": page_obj})
 
@@ -94,7 +96,10 @@ def project_detail(request, pk):
         pk=pk,
     )
     is_owner = request.user.is_authenticated and request.user == project.author
-    is_member = request.user.is_authenticated and project.members.filter(pk=request.user.pk).exists()
+    is_member = (
+        request.user.is_authenticated
+        and project.members.filter(pk=request.user.pk).exists()
+    )
     return render(
         request,
         "core/project_detail.html",
