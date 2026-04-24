@@ -8,9 +8,10 @@
 python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
+copy .env.example .env
 python manage.py migrate
 python manage.py createsuperuser
-python manage.py runserver
+python manage.py runserver --insecure
 ```
 
 Сайт откроется по адресу `http://127.0.0.1:8000/`.
@@ -26,10 +27,17 @@ python manage.py seed_demo
 ## Запуск через Docker Compose
 
 ```bash
+copy .env.example .env
 docker compose up --build
 ```
 
 В этом режиме используется PostgreSQL и volume `postgres_data`.
+
+## Проверка
+
+```bash
+python manage.py test
+```
 
 ## Что есть в проекте
 

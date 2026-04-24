@@ -4,11 +4,29 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "teamfinder-local-secret-key"
+env_path = BASE_DIR / ".env"
+if env_path.exists():
+    for line in env_path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        os.environ.setdefault(key.strip(), value.strip().strip("\"'"))
 
-DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+def env_list(name, default=""):
+    return [item.strip() for item in os.getenv(name, default).split(",") if item.strip()]
+
+
+SECRET_KEY = os.environ["SECRET_KEY"]
+
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
+
+ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", "127.0.0.1,localhost,testserver")
+CSRF_TRUSTED_ORIGINS = env_list(
+    "CSRF_TRUSTED_ORIGINS",
+    "http://127.0.0.1:8000,http://localhost:8000",
+)
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -53,10 +71,10 @@ if os.getenv("POSTGRES_HOST"):
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.getenv("POSTGRES_DB", "teamfinder"),
-            "USER": os.getenv("POSTGRES_USER", "teamfinder"),
-            "PASSWORD": os.getenv("POSTGRES_PASSWORD", "teamfinder"),
-            "HOST": os.getenv("POSTGRES_HOST", "db"),
+            "NAME": os.environ["POSTGRES_DB"],
+            "USER": os.environ["POSTGRES_USER"],
+            "PASSWORD": os.environ["POSTGRES_PASSWORD"],
+            "HOST": os.environ["POSTGRES_HOST"],
             "PORT": os.getenv("POSTGRES_PORT", "5432"),
         }
     }

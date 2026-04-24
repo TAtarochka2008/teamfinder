@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.views import LoginView
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -55,9 +56,10 @@ def profile_detail(request, pk):
     )
 
 
+@login_required
 def profile_edit(request, pk):
     profile = get_object_or_404(Profile.objects.select_related("user"), pk=pk)
-    if not request.user.is_authenticated or request.user != profile.user:
+    if request.user != profile.user:
         return redirect("profile_detail", pk=profile.pk)
     if request.method == "POST":
         form = ProfileForm(request.POST, instance=profile)
@@ -100,9 +102,8 @@ def project_detail(request, pk):
     )
 
 
+@login_required
 def project_create(request):
-    if not request.user.is_authenticated:
-        return redirect(f"{reverse('login')}?next={request.path}")
     if request.method == "POST":
         form = ProjectForm(request.POST)
         if form.is_valid():
@@ -117,9 +118,10 @@ def project_create(request):
     return render(request, "core/project_form.html", {"form": form, "is_edit": False})
 
 
+@login_required
 def project_edit(request, pk):
     project = get_object_or_404(Project, pk=pk)
-    if not request.user.is_authenticated or request.user != project.author:
+    if request.user != project.author:
         return redirect("project_detail", pk=project.pk)
     if request.method == "POST":
         form = ProjectForm(request.POST, instance=project)
@@ -137,9 +139,8 @@ def project_edit(request, pk):
 
 
 @require_POST
+@login_required
 def project_join(request, pk):
-    if not request.user.is_authenticated:
-        return redirect(f"{reverse('login')}?next={reverse('project_detail', args=[pk])}")
     project = get_object_or_404(Project, pk=pk)
     if project.status == Project.OPEN:
         project.members.add(request.user)
@@ -148,9 +149,10 @@ def project_join(request, pk):
 
 
 @require_POST
+@login_required
 def project_finish(request, pk):
     project = get_object_or_404(Project, pk=pk)
-    if request.user.is_authenticated and request.user == project.author:
+    if request.user == project.author:
         project.status = Project.CLOSED
         project.save(update_fields=["status", "updated_at"])
         messages.success(request, "Проект закрыт.")
@@ -171,9 +173,10 @@ def skill_search(request):
 
 
 @require_POST
+@login_required
 def profile_skill_add(request, pk):
     profile = get_object_or_404(Profile, pk=pk)
-    if not request.user.is_authenticated or request.user != profile.user:
+    if request.user != profile.user:
         return JsonResponse({"error": "forbidden"}, status=403)
     name = request.POST.get("name", "").strip()
     if not name:
@@ -184,9 +187,10 @@ def profile_skill_add(request, pk):
 
 
 @require_POST
+@login_required
 def profile_skill_delete(request, pk, skill_id):
     profile = get_object_or_404(Profile, pk=pk)
-    if not request.user.is_authenticated or request.user != profile.user:
+    if request.user != profile.user:
         return JsonResponse({"error": "forbidden"}, status=403)
     profile.skills.remove(skill_id)
     return JsonResponse({"ok": True})
