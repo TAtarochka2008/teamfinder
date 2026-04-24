@@ -14,19 +14,12 @@ if env_path.exists():
         os.environ.setdefault(key.strip(), value.strip().strip("\"'"))
 
 
-def env_list(name, default=""):
-    return [item.strip() for item in os.getenv(name, default).split(",") if item.strip()]
-
-
 SECRET_KEY = os.environ["SECRET_KEY"]
 
-DEBUG = os.getenv("DEBUG", "False").lower() == "true"
+DEBUG = False
 
-ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", "127.0.0.1,localhost,testserver")
-CSRF_TRUSTED_ORIGINS = env_list(
-    "CSRF_TRUSTED_ORIGINS",
-    "http://127.0.0.1:8000,http://localhost:8000",
-)
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "testserver"]
+CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:8000", "http://localhost:8000"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
