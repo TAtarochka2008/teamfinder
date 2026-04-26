@@ -6,8 +6,7 @@
 
 Проект приведён к структуре шаблона `team-finder-ad`:
 
-- `team_finder/` — настройки Django-проекта;
-- `team_finder/core/` — приложение с моделями, формами, views, тестами и management-командами;
+- `team_finder/` — настройки Django-проекта и приложение с моделями, формами, views, тестами и management-командами;
 - `templates_var2/` — используемые HTML-шаблоны для выбранного варианта 2;
 - `templates_var1/`, `templates_var3/` — резервные папки под остальные варианты;
 - `static/` — CSS и JavaScript;

@@ -28,7 +28,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "team_finder.core",
+    "team_finder.apps.CoreConfig",
 ]
 
 MIDDLEWARE = [
