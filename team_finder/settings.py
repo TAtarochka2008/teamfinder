@@ -41,12 +41,12 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "teamfinder.urls"
+ROOT_URLCONF = "team_finder.urls"
 
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates"],
+        "DIRS": [BASE_DIR / "templates_var2"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -58,7 +58,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "teamfinder.wsgi.application"
+WSGI_APPLICATION = "team_finder.wsgi.application"
 
 if os.getenv("POSTGRES_HOST"):
     DATABASES = {

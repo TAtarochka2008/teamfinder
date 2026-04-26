@@ -2,13 +2,25 @@
 
 Платформа для поиска команды на pet-проекты. Реализована базовая функциональность из задания и вариант 2: навыки пользователей с добавлением без перезагрузки страницы и фильтрацией участников по навыкам.
 
+## Структура
+
+Проект приведён к структуре шаблона `team-finder-ad`:
+
+- `team_finder/` — настройки Django-проекта;
+- `core/` — приложение с моделями, формами, views, тестами и management-командами;
+- `templates_var2/` — используемые HTML-шаблоны для выбранного варианта 2;
+- `templates_var1/`, `templates_var3/` — резервные папки под остальные варианты;
+- `static/` — CSS и JavaScript;
+- `media/` — пользовательские файлы;
+- `docs/` — документация проекта.
+
 ## Запуск
 
 ```bash
 python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
-copy .env.example .env
+copy .env_example .env
 python manage.py migrate
 python manage.py createsuperuser
 python manage.py runserver --insecure
@@ -27,7 +39,7 @@ python manage.py seed_demo
 ## Запуск через Docker Compose
 
 ```bash
-copy .env.example .env
+copy .env_example .env
 docker compose up --build
 ```
 

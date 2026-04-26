@@ -2,7 +2,7 @@ venv/
 __pycache__/
 *.pyc
 .env
-!.env.example
+!.env_example
 db.sqlite3
 server*.log
 staticfiles/
