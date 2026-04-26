@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path
 
-from core import views
+from team_finder.core import views
 
 
 urlpatterns = [
