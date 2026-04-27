@@ -3,7 +3,7 @@ from django.db import IntegrityError, transaction
 from django.test import TestCase
 from django.urls import reverse
 
-from projects.models import Project
+from team_finder.projects.models import Project
 
 from .models import Skill
 

@@ -28,8 +28,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "users.apps.UsersConfig",
-    "projects.apps.ProjectsConfig",
+    "team_finder.users.apps.UsersConfig",
+    "team_finder.projects.apps.ProjectsConfig",
 ]
 
 MIDDLEWARE = [

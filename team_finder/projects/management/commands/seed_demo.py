@@ -1,8 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 
-from projects.models import Project
-from users.models import Profile, Skill
+from team_finder.projects.models import Project
+from team_finder.users.models import Profile, Skill
 
 
 class Command(BaseCommand):

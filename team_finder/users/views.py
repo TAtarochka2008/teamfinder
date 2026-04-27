@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
-from projects.models import Project
+from team_finder.projects.models import Project
 
 from .forms import EmailAuthenticationForm, ProfileForm, SignupForm
 from .models import Profile, Skill
