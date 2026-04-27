@@ -3,10 +3,12 @@ from django.db import IntegrityError, transaction
 from django.test import TestCase
 from django.urls import reverse
 
-from .models import Project, Skill
+from projects.models import Project
+
+from .models import Skill
 
 
-class SmokeTests(TestCase):
+class UserTests(TestCase):
     def setUp(self):
         User = get_user_model()
         self.user = User.objects.create_user(
@@ -22,16 +24,13 @@ class SmokeTests(TestCase):
             description="Описание тестового проекта",
             github_url="https://github.com/",
         )
-        self.project.members.add(self.user)
         self.skill = Skill.objects.create(name="Django")
         self.user.profile.skills.add(self.skill)
 
-    def test_public_pages_open(self):
+    def test_public_user_pages_open(self):
         urls = [
-            reverse("home"),
             reverse("user_list"),
             reverse("profile_detail", args=[self.user.profile.pk]),
-            reverse("project_detail", args=[self.project.pk]),
             reverse("login"),
             reverse("signup"),
         ]
@@ -44,27 +43,6 @@ class SmokeTests(TestCase):
         response = self.client.get(reverse("password_change"))
         self.assertEqual(response.status_code, 302)
         self.assertIn(reverse("login"), response["Location"])
-
-    def test_login_required_for_project_create(self):
-        response = self.client.get(reverse("project_create"))
-        self.assertEqual(response.status_code, 302)
-        self.assertIn(reverse("login"), response["Location"])
-
-    def test_authenticated_user_can_create_project(self):
-        self.client.force_login(self.user)
-        response = self.client.post(
-            reverse("project_create"),
-            {
-                "name": "Новый проект",
-                "description": "Описание нового проекта",
-                "github_url": "https://github.com/",
-                "status": Project.OPEN,
-            },
-        )
-        project = Project.objects.get(name="Новый проект")
-        self.assertRedirects(response, reverse("project_detail", args=[project.pk]))
-        self.assertEqual(project.author, self.user)
-        self.assertTrue(project.members.filter(pk=self.user.pk).exists())
 
     def test_owner_can_edit_profile(self):
         self.client.force_login(self.user)
@@ -85,38 +63,6 @@ class SmokeTests(TestCase):
         self.assertRedirects(response, reverse("profile_detail", args=[self.user.profile.pk]))
         self.assertEqual(self.user.email, "owner-new@yandex.com")
         self.assertEqual(self.user.profile.bio, "Обновлённое описание")
-
-    def test_owner_can_edit_and_finish_project(self):
-        self.client.force_login(self.user)
-        response = self.client.post(
-            reverse("project_edit", args=[self.project.pk]),
-            {
-                "name": "Изменённый проект",
-                "description": "Новое описание проекта",
-                "github_url": "https://github.com/",
-                "status": Project.OPEN,
-            },
-        )
-        self.project.refresh_from_db()
-        self.assertRedirects(response, reverse("project_detail", args=[self.project.pk]))
-        self.assertEqual(self.project.name, "Изменённый проект")
-
-        response = self.client.post(reverse("project_finish", args=[self.project.pk]))
-        self.project.refresh_from_db()
-        self.assertRedirects(response, reverse("project_detail", args=[self.project.pk]))
-        self.assertEqual(self.project.status, Project.CLOSED)
-
-    def test_authenticated_user_can_join_project(self):
-        User = get_user_model()
-        member = User.objects.create_user(
-            username="member@yandex.com",
-            email="member@yandex.com",
-            password="testpass123",
-        )
-        self.client.force_login(member)
-        response = self.client.post(reverse("project_join", args=[self.project.pk]))
-        self.assertRedirects(response, reverse("project_detail", args=[self.project.pk]))
-        self.assertTrue(self.project.members.filter(pk=member.pk).exists())
 
     def test_user_list_filters_by_skill(self):
         response = self.client.get(reverse("user_list"), {"skill": self.skill.name})

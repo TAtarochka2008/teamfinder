@@ -1,7 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 
-from team_finder.models import Project, Skill
+from projects.models import Project
+from users.models import Profile, Skill
 
 
 class Command(BaseCommand):
@@ -23,7 +24,7 @@ class Command(BaseCommand):
             if created:
                 user.set_password("testpass123")
                 user.save()
-            profile = user.profile
+            profile, _ = Profile.objects.get_or_create(user=user)
             profile.bio = f"{first_name} ищет команду для интересных pet-проектов."
             profile.github = "https://github.com/"
             profile.save()
